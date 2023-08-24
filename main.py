@@ -19,7 +19,7 @@ def main(update: Update, context: CallbackContext):
 
     chat_id = update.message.chat.id
     text = update.message.text
-    print(text)
+    print("LIKE", text == '👍')
     bot = context.bot
 
     bot.sendMessage(chat_id, text="like: 0\ndislike: 0")
