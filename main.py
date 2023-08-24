@@ -1,10 +1,8 @@
 from telegram import Bot, Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
+import json
 
 TOKEN ='5892121487:AAFJ8hXhSsCFBNMp-hHqFtAfwhO8RtCxdrM'
-
-count_like = 0
-count_dislike = 0
 
 def start(update: Update, context: CallbackContext):
 
@@ -20,15 +18,22 @@ def start(update: Update, context: CallbackContext):
 
 def main(update: Update, context: CallbackContext):
     
-    global count_like
-    global count_dislike
-    
+    f = open('data.json', 'r')
+    data = json.load(f)
+    f.close()
+
     chat_id = update.message.chat.id
     text = update.message.text
     if  text == '👍':
-        count_like += 1
+        data['like'] += 1
     elif text == '👎':
-        count_dislike += 1
+        data['dislike'] += 1
+    count_like = data.get('like')
+    count_dislike = data.get('dislike')
+    
+    f = open('data.json', 'w')
+    f.write(json.dumps(data, indent=4))
+    f.close
     bot = context.bot
 
     bot.sendMessage(chat_id, text=f"like: {count_like}\ndislike: {count_dislike}")
