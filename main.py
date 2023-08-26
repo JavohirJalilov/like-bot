@@ -8,6 +8,23 @@ def start(update: Update, context: CallbackContext):
 
     chat_id = update.message.chat.id
     bot = context.bot
+    f = open('data.json')
+    try:
+        data = json.loads(f.read())
+    except:
+        data = {}
+    finally:
+        f.close()
+
+    if str(chat_id) not in data.keys():
+        data[str(chat_id)] = {
+            "like": 0,
+            "dislike": 0
+        }
+    
+    f = open('data.json', 'w')
+    f.write(json.dumps(data, indent=4))
+    f.close()
 
     like = KeyboardButton(text='👍')
     dislike = KeyboardButton(text='👎')
@@ -22,16 +39,19 @@ def main(update: Update, context: CallbackContext):
     data = json.load(f)
     f.close()
 
+    
     chat_id = update.message.chat.id
     text = update.message.text
     if  text == '👍':
-        data['like'] += 1
+        data[str(chat_id)]['like'] += 1
     elif text == '👎':
-        data['dislike'] += 1
-    count_like = data.get('like')
-    count_dislike = data.get('dislike')
+        data[str(chat_id)]['dislike'] += 1
+
+    count_like = data[str(chat_id)]['like']
+    count_dislike = data[str(chat_id)]['dislike']
     
     f = open('data.json', 'w')
+    
     f.write(json.dumps(data, indent=4))
     f.close
     bot = context.bot
