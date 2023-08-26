@@ -51,9 +51,9 @@ def main(update: Update, context: CallbackContext):
     count_dislike = data[str(chat_id)]['dislike']
     
     f = open('data.json', 'w')
-    
+
     f.write(json.dumps(data, indent=4))
-    f.close
+    f.close()
     bot = context.bot
 
     bot.sendMessage(chat_id, text=f"like: {count_like}\ndislike: {count_dislike}")
