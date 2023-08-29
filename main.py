@@ -1,6 +1,9 @@
 from telegram import Bot, Update, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import Updater, MessageHandler, Filters, CallbackContext, CommandHandler
+from likedb import LikeDB
 import json
+
+db = LikeDB("data.json")
 
 TOKEN ='5892121487:AAFJ8hXhSsCFBNMp-hHqFtAfwhO8RtCxdrM'
 
@@ -8,23 +11,8 @@ def start(update: Update, context: CallbackContext):
 
     chat_id = update.message.chat.id
     bot = context.bot
-    f = open('data.json')
-    try:
-        data = json.loads(f.read())
-    except:
-        data = {}
-    finally:
-        f.close()
 
-    if str(chat_id) not in data.keys():
-        data[str(chat_id)] = {
-            "like": 0,
-            "dislike": 0
-        }
-    
-    f = open('data.json', 'w')
-    f.write(json.dumps(data, indent=4))
-    f.close()
+    db.add_user(str(chat_id)) # add user
 
     like = KeyboardButton(text='👍')
     dislike = KeyboardButton(text='👎')
@@ -43,17 +31,13 @@ def main(update: Update, context: CallbackContext):
     chat_id = update.message.chat.id
     text = update.message.text
     if  text == '👍':
-        data[str(chat_id)]['like'] += 1
+        data = db.add_like(str(chat_id))
     elif text == '👎':
-        data[str(chat_id)]['dislike'] += 1
+        data = db.add_dislike(str(chat_id))
 
     count_like = data[str(chat_id)]['like']
     count_dislike = data[str(chat_id)]['dislike']
-    
-    f = open('data.json', 'w')
 
-    f.write(json.dumps(data, indent=4))
-    f.close()
     bot = context.bot
 
     bot.sendMessage(chat_id, text=f"like: {count_like}\ndislike: {count_dislike}")
