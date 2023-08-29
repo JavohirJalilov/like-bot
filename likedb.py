@@ -10,6 +10,9 @@ class LikeDB:
         except:
             self. data = {}
 
+    def save(self, data):
+        with open(self.file_path, 'w') as f:
+            json.dump(data, f, indent=4)
 
     def add_user(self, chat_id: str):
         data = self.data
@@ -19,30 +22,22 @@ class LikeDB:
                 "dislike": 0
             }
         
-        with open(self.file_path, 'w') as f:
-            json.dump(data, f, indent=4)
-
+        self.save(data)
         return data
     
     def add_like(self, chat_id: str):
         data = self.data
         data[chat_id]['like'] += 1
 
-        with open(self.file_path, 'w') as f:
-            json.dump(data, f, indent=4)
-
+        self.save(data)
         return data
 
     def add_dislike(self, chat_id: str):
         data = self.data
         data[chat_id]['dislike'] += 1
 
-        with open(self.file_path, 'w') as f:
-            json.dump(data, f, indent=4)
-
+        self.save(data)
         return data
 
-    # def save(self, data):
-    #     with open(self.file_path, 'w') as f:
-    #         json.dump(data, f, indent=4)
+    
 
